@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 
 // Temporary until auth is implemented
-const MOCK_USER_ID = "383fc329-7be7-4ac7-bf29-1457fa0783a6";
+const MOCK_USER_ID = "8e5b250a-d567-4046-890f-e3ae0a89e6a8";
 
 export async function GET() {
   try {

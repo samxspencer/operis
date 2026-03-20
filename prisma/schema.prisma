@@ -16,6 +16,8 @@ model User {
   clients   Client[]
   sessions  Session[]
   invoices  Invoice[]
+
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Service {
@@ -34,6 +36,9 @@ model Client {
   id        String   @id @default(uuid())
   name      String
   email     String?
+  phone     String?
+  company   String?
+  address   String?
   notes     String?
   createdAt DateTime @default(now())
 
@@ -42,6 +47,10 @@ model Client {
 
   sessions  Session[]
   invoices  Invoice[]
+
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([userId])
 }
 
 model Session {
@@ -62,6 +71,12 @@ model Session {
 
   invoiceId   String?
   invoice     Invoice? @relation(fields: [invoiceId], references: [id])
+
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([userId])
+  @@index([clientId])
+  @@index([invoiceId])
 }
 
 model Invoice {
@@ -79,4 +94,10 @@ model Invoice {
   client      Client   @relation(fields: [clientId], references: [id])
 
   sessions    Session[]
+
+  updatedAt DateTime @default(now()) @updatedAt
+  
+  @@index([userId])
+  @@index([clientId])
+  @@unique([userId, clientId, month, year])
 }
