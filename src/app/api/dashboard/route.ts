@@ -48,6 +48,11 @@ export async function GET() {
       },
     });
 
+    // 5️⃣ Total services
+    const totalServices = await prisma.service.count({
+      where: { userId: MOCK_USER_ID },
+    });
+
     // ✅ Calculations
     const totalRevenue = paidInvoices.reduce(
       (sum, inv) => sum + Number(inv.totalAmount),
@@ -73,6 +78,7 @@ export async function GET() {
       paidInvoices: paidInvoices.length,
       unpaidInvoices: unpaidInvoices.length,
       totalClients,
+      totalServices,
       totalHours,
     });
   } catch (error) {
