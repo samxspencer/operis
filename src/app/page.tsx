@@ -87,6 +87,14 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      <div className="flex justify-end mb-6">
+        <button
+          onClick={() => router.push("/manage")}
+          className="bg-black text-white px-5 py-2 rounded-lg"
+        >
+          Manage
+        </button>
+      </div>
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">
           Dashboard — {data.month}/{data.year}

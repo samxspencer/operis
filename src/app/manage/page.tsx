@@ -1,12 +1,24 @@
 "use client";
-
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function ManagePage() {
+    const router = useRouter();
   /* -------------------- CLIENT -------------------- */
+  const [clients, setClients] = useState<any[]>([]);
   const [clientName, setClientName] = useState("");
   const [clientEmail, setClientEmail] = useState("");
   const [clientLoading, setClientLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchClients() {
+        const res = await fetch("/api/clients");
+        const data = await res.json();
+        setClients(data);
+    }
+
+    fetchClients();
+    }, []);
 
   async function handleAddClient() {
     if (!clientName) return;
@@ -78,6 +90,12 @@ export default function ManagePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+        <button
+        onClick={() => router.push("/")}
+        className="mb-6 text-sm text-gray-600 underline"
+        >
+        ← Back to Dashboard
+        </button>
       <div className="max-w-5xl mx-auto space-y-8">
         <h1 className="text-3xl font-bold">Manage</h1>
 
@@ -145,12 +163,18 @@ export default function ManagePage() {
           <h2 className="text-xl font-semibold mb-4">Create Invoice</h2>
 
           <div className="space-y-3">
-            <input
-              placeholder="Client ID"
-              value={clientId}
-              onChange={(e) => setClientId(e.target.value)}
-              className="w-full border p-3 rounded-lg"
-            />
+            <select
+            value={clientId}
+            onChange={(e) => setClientId(e.target.value)}
+            className="w-full border p-3 rounded-lg"
+            >
+            <option value="">Select Client</option>
+            {clients.map((client) => (
+                <option key={client.id} value={client.id}>
+                {client.name}
+                </option>
+            ))}
+            </select>
 
             <input
               type="number"

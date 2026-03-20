@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function InvoicesPage() {
+  const router = useRouter();
   const [invoices, setInvoices] = useState<any[]>([]);
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
@@ -40,7 +41,11 @@ export default function InvoicesPage() {
           </thead>
           <tbody>
             {invoices.map((inv) => (
-              <tr key={inv.id} className="border-t">
+              <tr
+                key={inv.id}
+                onClick={() => router.push(`/invoices/${inv.id}`)}
+                className="border-t cursor-pointer hover:bg-gray-50"
+              >
                 <td className="p-4">{inv.client?.name}</td>
                 <td className="p-4">{inv.month}</td>
                 <td className="p-4">{inv.year}</td>
