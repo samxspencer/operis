@@ -47,28 +47,32 @@ export default async function ClientPage({
   );
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8">
+    <div className="space-y-12 max-w-6xl">
       {/* =========================
          Header
       ========================= */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold">{client.name}</h1>
-          <p className="text-gray-500">Client Details</p>
+          <h1 className="text-3xl font-semibold tracking-tight">
+            {client.name}
+          </h1>
+          <p className="text-slate-500 mt-1">
+            Client Overview & Financial Summary
+          </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           {!isEditMode ? (
             <Link
               href={`/clients/${client.id}?edit=true`}
-              className="bg-blue-600 text-white px-4 py-2 rounded"
+              className="bg-[#1E3A8A] hover:bg-[#162E6E] text-white px-5 py-2.5 rounded-lg shadow-sm transition"
             >
-              Edit
+              Edit Client
             </Link>
           ) : (
             <Link
               href={`/clients/${client.id}`}
-              className="bg-gray-600 text-white px-4 py-2 rounded"
+              className="border border-slate-300 bg-white hover:bg-slate-50 px-5 py-2.5 rounded-lg transition"
             >
               Cancel
             </Link>
@@ -77,102 +81,187 @@ export default async function ClientPage({
       </div>
 
       {/* =========================
-         Client Info (View Mode)
+         Revenue Card (Executive Navy)
+      ========================= */}
+      <div className="bg-[#0B1F3A] text-white rounded-2xl p-10 shadow-lg">
+        <p className="text-sm uppercase tracking-widest text-white/60">
+          Total Revenue
+        </p>
+
+        <p className="text-5xl font-semibold mt-4">
+          ${totalRevenue.toFixed(2)}
+        </p>
+
+        <p className="text-white/50 text-sm mt-3">
+          Calculated from all completed sessions
+        </p>
+      </div>
+
+      {/* =========================
+         Client Information
       ========================= */}
       {!isEditMode && (
-        <div className="bg-white shadow rounded-lg p-6 space-y-2">
-          <p><strong>Email:</strong> {client.email || "-"}</p>
-          <p><strong>Phone:</strong> {client.phone || "-"}</p>
-          <p><strong>Company:</strong> {client.company || "-"}</p>
-          <p><strong>Address:</strong> {client.address || "-"}</p>
-          <p><strong>Notes:</strong> {client.notes || "-"}</p>
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+          <h2 className="text-lg font-semibold mb-6">
+            Client Information
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-6 text-sm">
+            <div>
+              <p className="text-slate-500">Email</p>
+              <p className="font-medium mt-1">
+                {client.email || "-"}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-slate-500">Phone</p>
+              <p className="font-medium mt-1">
+                {client.phone || "-"}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-slate-500">Company</p>
+              <p className="font-medium mt-1">
+                {client.company || "-"}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-slate-500">Address</p>
+              <p className="font-medium mt-1">
+                {client.address || "-"}
+              </p>
+            </div>
+
+            <div className="md:col-span-2">
+              <p className="text-slate-500">Notes</p>
+              <p className="font-medium mt-1">
+                {client.notes || "-"}
+              </p>
+            </div>
+          </div>
         </div>
       )}
 
       {/* =========================
          Edit Mode
       ========================= */}
-      {isEditMode && (
-        <ClientEditForm client={client} />
-      )}
+      {isEditMode && <ClientEditForm client={client} />}
 
       {/* =========================
-         Revenue Summary
+         Sessions
       ========================= */}
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-        <h2 className="text-lg font-semibold mb-2">
-          Revenue Summary
-        </h2>
-        <p className="text-3xl font-bold text-green-600">
-          ${totalRevenue.toFixed(2)}
-        </p>
-      </div>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <h2 className="text-xl font-semibold">
+            Sessions
+          </h2>
+        </div>
 
-      {/* =========================
-         Sessions Section
-      ========================= */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Sessions</h2>
-
-        {/* Add Session Form */}
         <SessionForm clientId={client.id} />
 
-        {client.sessions.length === 0 && (
-          <p className="text-gray-500">No sessions yet.</p>
-        )}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-100 text-slate-600">
+              <tr>
+                <th className="text-left p-4">Date</th>
+                <th className="text-left p-4">Service</th>
+                <th className="text-left p-4">Hours</th>
+                <th className="text-left p-4">Description</th>
+              </tr>
+            </thead>
 
-        {client.sessions.map((session: any) => (
-          <div
-            key={session.id}
-            className="bg-white shadow rounded-lg p-4 space-y-1"
-          >
-            <p>
-              <strong>Date:</strong>{" "}
-              {new Date(session.date).toLocaleDateString()}
-            </p>
-            <p>
-              <strong>Hours:</strong> {session.hours}
-            </p>
-            <p>
-              <strong>Service:</strong>{" "}
-              {session.service?.name || "-"}
-            </p>
-            <p>
-              <strong>Description:</strong>{" "}
-              {session.description || "-"}
-            </p>
-          </div>
-        ))}
+            <tbody>
+              {client.sessions.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="p-6 text-center text-slate-400"
+                  >
+                    No sessions recorded.
+                  </td>
+                </tr>
+              )}
+
+              {client.sessions.map((session: any) => (
+                <tr
+                  key={session.id}
+                  className="border-t hover:bg-slate-50 transition"
+                >
+                  <td className="p-4">
+                    {new Date(
+                      session.date
+                    ).toLocaleDateString()}
+                  </td>
+                  <td className="p-4">
+                    {session.service?.name || "-"}
+                  </td>
+                  <td className="p-4">
+                    {session.hours}
+                  </td>
+                  <td className="p-4">
+                    {session.description || "-"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* =========================
-         Invoices Section
+         Invoices
       ========================= */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Invoices</h2>
+      <div className="space-y-6">
+        <h2 className="text-xl font-semibold">
+          Invoices
+        </h2>
 
-        {client.invoices.length === 0 && (
-          <p className="text-gray-500">No invoices yet.</p>
-        )}
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-100 text-slate-600">
+              <tr>
+                <th className="text-left p-4">Period</th>
+                <th className="text-left p-4">Total</th>
+                <th className="text-left p-4">Status</th>
+              </tr>
+            </thead>
 
-        {client.invoices.map((invoice: any) => (
-          <div
-            key={invoice.id}
-            className="bg-white shadow rounded-lg p-4 space-y-1"
-          >
-            <p>
-              <strong>Period:</strong>{" "}
-              {invoice.month}/{invoice.year}
-            </p>
-            <p>
-              <strong>Total:</strong>{" "}
-              ${Number(invoice.totalAmount).toFixed(2)}
-            </p>
-            <p>
-              <strong>Status:</strong> {invoice.status}
-            </p>
-          </div>
-        ))}
+            <tbody>
+              {client.invoices.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={3}
+                    className="p-6 text-center text-slate-400"
+                  >
+                    No invoices generated.
+                  </td>
+                </tr>
+              )}
+
+              {client.invoices.map((invoice: any) => (
+                <tr
+                  key={invoice.id}
+                  className="border-t hover:bg-slate-50 transition"
+                >
+                  <td className="p-4">
+                    {invoice.month}/{invoice.year}
+                  </td>
+                  <td className="p-4 font-medium">
+                    ${Number(invoice.totalAmount).toFixed(2)}
+                  </td>
+                  <td className="p-4">
+                    <span className="px-3 py-1 rounded-full text-xs bg-slate-200 text-slate-700">
+                      {invoice.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
