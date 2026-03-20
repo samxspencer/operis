@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 type DashboardData = {
@@ -11,10 +11,12 @@ type DashboardData = {
   paidInvoices: number;
   unpaidInvoices: number;
   totalClients: number;
+  totalServices: number,
   totalHours: number;
 };
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -52,32 +54,34 @@ export default function DashboardPage() {
 
   const cards = [
     {
-      title: "Total Revenue",
-      value: `$${data.totalRevenue}`,
-    },
-    {
-      title: "Unpaid Amount",
-      value: `$${data.totalUnpaid}`,
-    },
-    {
       title: "Total Invoices",
       value: data.totalInvoices,
+      onClick: () => router.push("/invoices"),
     },
     {
       title: "Paid Invoices",
       value: data.paidInvoices,
+      onClick: () => router.push("/invoices?status=paid"),
     },
     {
       title: "Unpaid Invoices",
       value: data.unpaidInvoices,
+      onClick: () => router.push("/invoices?status=unpaid"),
     },
     {
       title: "Total Clients",
       value: data.totalClients,
+      onClick: () => router.push("/clients"),
+    },
+    {
+      title: "Total Services",
+      value: data.totalServices,
+      onClick: () => router.push("/services"),
     },
     {
       title: "Total Hours",
       value: data.totalHours,
+      onClick: () => router.push("/sessions"),
     },
   ];
 
@@ -92,6 +96,7 @@ export default function DashboardPage() {
           {cards.map((card, index) => (
             <div
               key={index}
+              onClick={card.onClick}
               className="bg-white shadow-sm rounded-xl p-6 border"
             >
               <p className="text-sm text-gray-500">{card.title}</p>
